@@ -46,7 +46,7 @@ env:
   WRT_CFG: ${{inputs.WRT_CFG}}
 
 jobs:
-  wrt_编译:
+  wrt_core:
     runs-on: ubuntu-latest
     steps:
       - name: 签出项目
