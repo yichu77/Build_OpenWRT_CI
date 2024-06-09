@@ -1,0 +1,7 @@
+#ipq40xx
+CONFIG_TARGET_ipq40xx=y
+CONFIG_TARGET_ipq40xx_DEVICE_hiwifi_c526a=y
+CONFIG_TARGET_BOARD="ipq40xx"
+#额外组件
+CONFIG_GRUB_IMAGES=y
+#额外插件
