@@ -34,8 +34,8 @@ on:
         required: true
         type: string
       WRT_CFG:
-        required: false
-        default: 'false'
+        required: true
+        default: 'true'
         type: string
 
 env:
