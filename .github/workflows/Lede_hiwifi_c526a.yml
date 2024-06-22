@@ -7,6 +7,7 @@ on:
     #- cron: 0 20 * * *
   #手动编译
   workflow_dispatch:
+
 #CI权限
 permissions: write-all
 
@@ -14,7 +15,7 @@ permissions: write-all
 jobs:
   wrt_config:
     #调用公用编译核心WRT-CORE.yml
-    #uses: ./.github/workflows/WRT-CORE.yml
+    uses: ./.github/workflows/WRT-CORE.yml
     with:
       #编译平台，ipq40xx
       WRT_TARGET: ipq40xx
