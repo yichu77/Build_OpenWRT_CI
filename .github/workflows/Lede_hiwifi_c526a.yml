@@ -40,14 +40,14 @@ on:
 
 env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  WRT_BRANCH: ${{inputs.WRT_BRANCH}}
-  WRT_TARGET: ${{inputs.WRT_TARGET}}
-  WRT_THEME: ${{inputs.WRT_THEME}}
-  WRT_NAME: ${{inputs.WRT_NAME}}
-  WRT_WIFI: ${{inputs.WRT_WIFI}}
-  WRT_URL: ${{inputs.WRT_URL}}
-  WRT_IP: ${{inputs.WRT_IP}}
-  WRT_PW: ${{inputs.WRT_PW}}
+  WRT_BRANCH: master
+  WRT_TARGET: ipq40xx
+  WRT_THEME: opentopd
+  WRT_NAME: OpenWRT
+  WRT_WIFI: OpenWRT
+  WRT_URL: https://github.com/coolsnowwolf/lede.git
+  WRT_IP: 192.168.168.1
+  WRT_PW: password
   WRT_CFG: ${{inputs.WRT_CFG}}
 
 
