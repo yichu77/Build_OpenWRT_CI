@@ -56,6 +56,24 @@ permissions: write-all
 
 #CI任务
 jobs:
+  wrt_config:
+      #编译平台，ipq40xx
+      WRT_TARGET: ipq40xx
+      #默认主题
+      WRT_THEME: opentopd
+      #默认主机名
+      WRT_NAME: OpenWRT
+      #默认WIFI名
+      WRT_WIFI: OpenWRT
+      #默认密码，仅作提示，修改无用
+      WRT_PW: password
+      #默认地址
+      WRT_IP: 192.168.168.1
+      #默认源码
+      WRT_URL: https://github.com/coolsnowwolf/lede.git
+      #默认分支
+      WRT_BRANCH: master
+
    wrt_core:
     runs-on: ubuntu-latest
     steps:
