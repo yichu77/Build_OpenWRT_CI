@@ -116,15 +116,6 @@ jobs:
         run: |
           find ./ -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
 
-      - name: 检查修补程序
-        run: |
-          if [ -f "$GITHUB_WORKSPACE/Scripts/Patches.sh" ]; then
-            $GITHUB_WORKSPACE/Scripts/Patches.sh
-            echo "patchs installation done!"
-          else
-            echo "no patchs installed!"
-          fi
-
       - name: 检查缓存
         if: env.WRT_CFG == 'false'
         id: check-cache
