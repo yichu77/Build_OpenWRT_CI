@@ -1,12 +1,7 @@
-#CI项目名
-name: 编译Lede_hiwifi_c526a
+#云编译公用核心
+name: 云编译公用核心_X64
 
 on:
-  #自动编译：每天早上4点
-  #schedule:
-    #- cron: 0 20 * * *
-  #手动编译
-  workflow_dispatch:
   workflow_call:
     inputs:
       WRT_BRANCH:
@@ -34,29 +29,24 @@ on:
         required: true
         type: string
       WRT_CFG:
-        required: true
-        default: 'true'
+        required: false
+        default: 'false'
         type: string
 
 env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  WRT_BRANCH: master
-  WRT_TARGET: ipq40xx
-  WRT_THEME: opentopd
-  WRT_NAME: OpenWRT
-  WRT_WIFI: OpenWRT
-  WRT_URL: https://github.com/coolsnowwolf/lede.git
-  WRT_IP: 192.168.168.1
-  WRT_PW: password
+  WRT_BRANCH: ${{inputs.WRT_BRANCH}}
+  WRT_TARGET: ${{inputs.WRT_TARGET}}
+  WRT_THEME: ${{inputs.WRT_THEME}}
+  WRT_NAME: ${{inputs.WRT_NAME}}
+  WRT_WIFI: ${{inputs.WRT_WIFI}}
+  WRT_URL: ${{inputs.WRT_URL}}
+  WRT_IP: ${{inputs.WRT_IP}}
+  WRT_PW: ${{inputs.WRT_PW}}
   WRT_CFG: ${{inputs.WRT_CFG}}
 
-
-#CI权限
-permissions: write-all
-
-#CI任务
 jobs:
-   wrt_core:
+  wrt_core:
     runs-on: ubuntu-latest
     steps:
       - name: 签出项目
@@ -99,7 +89,7 @@ jobs:
           export WRT_DATE=$(TZ=UTC-8 date +"%y.%m.%d_%H.%M.%S")
           export WRT_REPO=$(basename $GITHUB_WORKSPACE)
           export WRT_SOURCE=$(echo $WRT_URL | cut -d '/' -f 5-)
-          export WRT_TYPE=$(sed -n "1{s/^#//;s/\r$//;p;q}" $GITHUB_WORKSPACE/Config_c526a/$WRT_TARGET.txt)
+          export WRT_TYPE=$(sed -n "1{s/^#//;s/\r$//;p;q}" $GITHUB_WORKSPACE/Config/$WRT_TARGET.txt)
 
           echo "WRT_DATE=$WRT_DATE" >> $GITHUB_ENV
           echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
@@ -118,8 +108,8 @@ jobs:
 
       - name: 检查修补程序
         run: |
-          if [ -f "$GITHUB_WORKSPACE/Scripts_c526a/Patches.sh" ]; then
-            $GITHUB_WORKSPACE/Scripts_c526a/Patches.sh
+          if [ -f "$GITHUB_WORKSPACE/Scripts/Patches.sh" ]; then
+            $GITHUB_WORKSPACE/Scripts/Patches.sh
             echo "patchs installation done!"
           else
             echo "no patchs installed!"
@@ -166,8 +156,8 @@ jobs:
         run: |
           cd ./wrt/package/
 
-          $GITHUB_WORKSPACE/Scripts_c526a/Packages.sh
-          $GITHUB_WORKSPACE/Scripts_c526a/Handles.sh
+          $GITHUB_WORKSPACE/Scripts/Packages.sh
+          $GITHUB_WORKSPACE/Scripts/Handles.sh
 
       - name: 自定义设置
         run: |
@@ -175,9 +165,9 @@ jobs:
 
           rm -rf ./tmp* ./.config*
 
-          cat $GITHUB_WORKSPACE/Config_c526a/$WRT_TARGET.txt >> .config
+          cat $GITHUB_WORKSPACE/Config/$WRT_TARGET.txt $GITHUB_WORKSPACE/Config/General.txt >> .config
 
-          $GITHUB_WORKSPACE/Scripts_c526a/Settings.sh
+          $GITHUB_WORKSPACE/Scripts/Settings.sh
 
           make defconfig
 
@@ -241,4 +231,3 @@ jobs:
             设备：${{env.WRT_TYPE}}
             密码：${{env.WRT_PW}}
             地址：${{env.WRT_IP}}
-
