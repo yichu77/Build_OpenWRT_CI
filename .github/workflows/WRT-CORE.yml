@@ -1,5 +1,5 @@
 #云编译公用核心
-name: 云编译公用核心_c526a
+name: 云编译公用核心
 
 on:
   workflow_call:
@@ -106,6 +106,15 @@ jobs:
         run: |
           find ./ -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
 
+      - name: 检查修补程序
+        run: |
+          if [ -f "$GITHUB_WORKSPACE/Scripts/Patches.sh" ]; then
+            $GITHUB_WORKSPACE/Scripts/Patches.sh
+            echo "patchs installation done!"
+          else
+            echo "no patchs installed!"
+          fi
+
       - name: 检查缓存
         if: env.WRT_CFG == 'false'
         id: check-cache
@@ -147,8 +156,8 @@ jobs:
         run: |
           cd ./wrt/package/
 
-          $GITHUB_WORKSPACE/Scripts_c526a/Packages.sh
-          $GITHUB_WORKSPACE/Scripts_c526a/Handles.sh
+          $GITHUB_WORKSPACE/Scripts/Packages.sh
+          $GITHUB_WORKSPACE/Scripts/Handles.sh
 
       - name: 自定义设置
         run: |
@@ -156,9 +165,9 @@ jobs:
 
           rm -rf ./tmp* ./.config*
 
-          cat $GITHUB_WORKSPACE/Config_c526a/$WRT_TARGET.txt $GITHUB_WORKSPACE/Config_c526a/General.txt >> .config
+          cat $GITHUB_WORKSPACE/Config/$WRT_TARGET.txt $GITHUB_WORKSPACE/Config/General.txt >> .config
 
-          $GITHUB_WORKSPACE/Scripts_c526a/Settings.sh
+          $GITHUB_WORKSPACE/Scripts/Settings.sh
 
           make defconfig
 
