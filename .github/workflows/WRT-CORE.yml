@@ -16,7 +16,7 @@ permissions: write-all
 
 env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  WRT_BRANCH:master
+  WRT_BRANCH: master
   WRT_TARGET: X64   #编译平台，X64包含X86
   WRT_THEME: opentopd
   WRT_NAME: OpenWRT
