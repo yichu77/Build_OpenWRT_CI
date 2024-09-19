@@ -1,49 +1,31 @@
-#云编译公用核心
-name: 云编译公用核心
+#云编译
+name: 编译Lede_x86_64
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
-      WRT_BRANCH:
+      name:
+        description: 'Person to greet'
         required: true
-        type: string
-      WRT_TARGET:
-        required: true
-        type: string
-      WRT_THEME:
-        required: true
-        type: string
-      WRT_NAME:
-        required: true
-        type: string
-      WRT_WIFI:
-        required: true
-        type: string
-      WRT_URL:
-        required: true
-        type: string
-      WRT_IP:
-        required: true
-        type: string
-      WRT_PW:
-        required: true
-        type: string
-      WRT_CFG:
-        required: false
-        default: 'false'
-        type: string
+        default: 'build-Lede_x86_64'
+
+
+#CI权限
+permissions: write-all
+
 
 env:
   GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  WRT_BRANCH: ${{inputs.WRT_BRANCH}}
-  WRT_TARGET: ${{inputs.WRT_TARGET}}
-  WRT_THEME: ${{inputs.WRT_THEME}}
-  WRT_NAME: ${{inputs.WRT_NAME}}
-  WRT_WIFI: ${{inputs.WRT_WIFI}}
-  WRT_URL: ${{inputs.WRT_URL}}
-  WRT_IP: ${{inputs.WRT_IP}}
-  WRT_PW: ${{inputs.WRT_PW}}
-  WRT_CFG: ${{inputs.WRT_CFG}}
+  WRT_BRANCH:master
+  WRT_TARGET: X64   #编译平台，X64包含X86
+  WRT_THEME: opentopd
+  WRT_NAME: OpenWRT
+  WRT_WIFI: OpenWRT
+  WRT_URL: https://github.com/coolsnowwolf/lede.git
+  WRT_IP: 192.168.168.1
+  WRT_PW: password
+  WRT_CFG: false
+
 
 jobs:
   wrt_core:
