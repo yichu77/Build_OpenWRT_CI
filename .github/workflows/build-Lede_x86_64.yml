@@ -21,7 +21,7 @@ env:
   WRT_THEME: opentopd
   WRT_NAME: OpenWRT
   WRT_WIFI: OpenWRT
-  WRT_URL: https://github.com/coolsnowwolf/lede.git
+  WRT_URL: https://github.com/coolsnowwolf/lede
   WRT_IP: 192.168.168.1
   WRT_PW: password
   WRT_CFG: false
@@ -31,7 +31,7 @@ jobs:
   wrt_core:
     runs-on: ubuntu-latest
     steps:
-      - name: 签出项目
+      - name: 签入项目
         uses: actions/checkout@main
 
       - name: 清理磁盘空间
