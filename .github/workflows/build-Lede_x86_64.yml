@@ -3,11 +3,7 @@ name: 编译Lede_x86_64
 
 on:
   workflow_dispatch:
-    inputs:
-      name:
-        description: 'Person to greet'
-        required: true
-        default: 'build-Lede_x86_64'
+
 
 
 #CI权限
@@ -15,7 +11,7 @@ permissions: write-all
 
 
 env:
-  GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
   WRT_BRANCH: master
   WRT_TARGET: X64   #编译平台，X64包含X86
   WRT_THEME: opentopd
@@ -24,18 +20,54 @@ env:
   WRT_URL: https://github.com/coolsnowwolf/lede
   WRT_IP: 192.168.168.1
   WRT_PW: password
+  CONFIG_FILE: .config
   WRT_CFG: false
-
+  FREE_DISK_SPACE: false
 
 jobs:
   wrt_core:
     runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    name: 编译 ${{matrix.target}}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [Lede_x86_64]  #[Lede_x86_64,Lienol_x86_64,Project_x86_64,L_hiwifi_c526a]
+        
     steps:
       - name: 签入项目
         uses: actions/checkout@main
 
+      - name: 初始化值
+        run: |
+          export WRT_DATE=$(TZ=UTC-8 date +"%y.%m.%d_%H.%M.%S")
+          export WRT_REPO=$(basename $GITHUB_WORKSPACE)
+          export WRT_SOURCE=$(echo $WRT_URL | cut -d '/' -f 5-)
+          export WRT_TYPE=$(sed -n "1{s/^#//;s/\r$//;p;q}" $GITHUB_WORKSPACE/${{matrix.target}}/.config)
+
+          echo "WRT_DATE=$WRT_DATE" >> $GITHUB_ENV
+          echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
+          echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
+          echo "WRT_TYPE=$WRT_TYPE" >> $GITHUB_ENV
+
+      - name: 部署编译环境
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          docker rmi $(docker images -q)
+          sudo -E apt -yqq update
+          sudo -E apt -yqq full-upgrade
+          sudo -E apt -yqq install $(sed -n "1{s/\r$//g;p;q}" $GITHUB_WORKSPACE/Depends.txt)
+          sudo -E apt -yqq autoremove --purge
+          sudo -E apt -yqq autoclean
+          sudo -E apt -yqq clean
+          sudo -E systemctl daemon-reload
+          sudo -E timedatectl set-timezone "Asia/Shanghai"
+
       - name: 清理磁盘空间
         uses: endersonmenezes/free-disk-space@main
+        if: env.FREE_DISK_SPACE == 'true' && !cancelled()
         with:
           remove_android: true
           remove_dotnet: true
@@ -52,32 +84,6 @@ jobs:
             /var/lib/mysql* /var/log/azure*"
           testing: false
 
-      - name: 部署编译环境
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          docker rmi $(docker images -q)
-          sudo -E apt -yqq update
-          sudo -E apt -yqq full-upgrade
-          sudo -E apt -yqq install $(sed -n "1{s/\r$//g;p;q}" $GITHUB_WORKSPACE/Depends.txt)
-          sudo -E apt -yqq autoremove --purge
-          sudo -E apt -yqq autoclean
-          sudo -E apt -yqq clean
-          sudo -E systemctl daemon-reload
-          sudo -E timedatectl set-timezone "Asia/Shanghai"
-
-      - name: 初始化值
-        run: |
-          export WRT_DATE=$(TZ=UTC-8 date +"%y.%m.%d_%H.%M.%S")
-          export WRT_REPO=$(basename $GITHUB_WORKSPACE)
-          export WRT_SOURCE=$(echo $WRT_URL | cut -d '/' -f 5-)
-          export WRT_TYPE=$(sed -n "1{s/^#//;s/\r$//;p;q}" $GITHUB_WORKSPACE/Config/$WRT_TARGET.txt)
-
-          echo "WRT_DATE=$WRT_DATE" >> $GITHUB_ENV
-          echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
-          echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
-          echo "WRT_TYPE=$WRT_TYPE" >> $GITHUB_ENV
-
       - name: 克隆源代码
         run: |
           git clone --depth=1 --single-branch --branch $WRT_BRANCH $WRT_URL ./wrt/
@@ -90,8 +96,8 @@ jobs:
 
       - name: 检查修补程序
         run: |
-          if [ -f "$GITHUB_WORKSPACE/Scripts/Patches.sh" ]; then
-            $GITHUB_WORKSPACE/Scripts/Patches.sh
+          if [ -f "$GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Patches.sh" ]; then
+            $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Patches.sh
             echo "patchs installation done!"
           else
             echo "no patchs installed!"
@@ -138,8 +144,8 @@ jobs:
         run: |
           cd ./wrt/package/
 
-          $GITHUB_WORKSPACE/Scripts/Packages.sh
-          $GITHUB_WORKSPACE/Scripts/Handles.sh
+          $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Packages.sh
+          $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Handles.sh
 
       - name: 自定义设置
         run: |
@@ -147,9 +153,9 @@ jobs:
 
           rm -rf ./tmp* ./.config*
 
-          cat $GITHUB_WORKSPACE/Config/$WRT_TARGET.txt $GITHUB_WORKSPACE/Config/General.txt >> .config
+          cat $GITHUB_WORKSPACE/${{matrix.target}}/.config >> .config
 
-          $GITHUB_WORKSPACE/Scripts/Settings.sh
+          $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Settings.sh
 
           make defconfig
 
@@ -206,7 +212,6 @@ jobs:
           body: |
             这是个平台固件包，内含多个设备！
             请注意选择你需要的设备固件！
-            不要问，更就完事了！
 
             源码：${{env.WRT_SOURCE}}
             平台：${{env.WRT_TARGET}}
