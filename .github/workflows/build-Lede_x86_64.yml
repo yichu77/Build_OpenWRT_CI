@@ -179,7 +179,7 @@ jobs:
         run: |
           cd ./wrt/ && mkdir ./upload/
 
-          cp -rf ./.config ./upload/Config_"$WRT_TARGET"_"${{matrix.target}}"_"$WRT_DATE".txt
+          cp -rf ./.config ./upload/Config_"${{matrix.target}}"_"$WRT_DATE".txt
 
           if [[ $WRT_CFG == 'false' ]]; then
             rm -rf $(find ./bin/targets/ -iregex ".*\(buildinfo\|json\|manifest\|sha256sums\|packages\)$")
@@ -198,21 +198,18 @@ jobs:
         uses: actions/upload-artifact@main
         if: env.UPLOAD_FIRMWARE == 'true'  
         with:
-          name: OpenWrt_firmware_${{matrix.target}}_${{ env.FILE_DATE }}
+          name: OpenWrt_firmware_${{matrix.target}}_${{ env.WRT_DATE}}
           path: ./wrt/upload/
 
       - name: 发布固件到release
         uses: softprops/action-gh-release@master
         if: env.UPLOAD_RELEASE == 'true'
         with:
-          tag_name: ${{env.WRT_TARGET}}_${{env.WRT_SOURCE}}_${{env.WRT_DATE}}
+          tag_name: OpenWrt_${{env.WRT_SOURCE}}_${{env.WRT_DATE}}
           files: ./wrt/upload/*.*
           body: |
-            这是个平台固件包，内含多个设备！
-            请注意选择你需要的设备固件！
 
             源码：${{env.WRT_SOURCE}}
-            平台：${{env.WRT_TARGET}}
             设备：${{env.WRT_TYPE}}
             密码：${{env.WRT_PW}}
             地址：${{env.WRT_IP}}
