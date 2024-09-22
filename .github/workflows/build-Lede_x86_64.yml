@@ -171,7 +171,8 @@ jobs:
         run: |
           cd ./wrt/
           make -j$(nproc) || make -j1 V=s      
-          echo "WRT_DATE=$(date +"%Y-%m-%d_%H%M")" >> $GITHUB_ENV
+          export WRT_DATE=$(date +"%Y-%m-%d_%H%M")
+          echo "WRT_DATE=$WRT_DATE" >> $GITHUB_ENV
 
 
       - name: 打包固件
