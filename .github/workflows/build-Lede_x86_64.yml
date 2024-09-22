@@ -20,7 +20,7 @@ env:
   WRT_IP: 192.168.168.1
   WRT_PW: password
   WRT_CFG: false
-  FREE_DISK_SPACE: false
+  FREE_DISK_SPACE: true
   UPLOAD_FIRMWARE: true
   UPLOAD_RELEASE: false
 
