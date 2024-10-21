@@ -1,5 +1,5 @@
 #云编译
-name: 编译Lede_x86_64
+name: 编译Hiwifi-c526a
 
 on:
   workflow_dispatch:
@@ -44,7 +44,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [Lede_x86_64]  #[Lede_x86_64,Lienol_x86_64,Project_x86_64,hiwifi_c526a]
+        target: [hiwifi_c526a]  #[Lede_x86_64,Lienol_x86_64,Project_x86_64,L_hiwifi_c526a]
         
     steps:
       - name: 签入项目
@@ -97,6 +97,7 @@ jobs:
       - name: 克隆源代码
         run: |
           git clone --depth=1 --single-branch --branch $WRT_BRANCH $WRT_URL ./wrt/
+
           cd ./wrt/ && echo "WRT_HASH=$(git log -1 --pretty=format:'%h')" >> $GITHUB_ENV
 
       - name: 检查脚本
@@ -143,33 +144,26 @@ jobs:
       - name: 更新源
         run: |
           cd ./wrt/
-
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
       - name: 自定义程序包
         run: |
           cd ./wrt/package/
-
           $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Packages.sh
           $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Handles.sh
 
       - name: 自定义设置
         run: |
           cd ./wrt/
-
           rm -rf ./tmp* ./.config*
-
           cat $GITHUB_WORKSPACE/${{matrix.target}}/.config >> .config
-
           $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Settings.sh
-
           make defconfig
 
       - name: 下载软件包
         run: |
           cd ./wrt/
-
           make download -j$(nproc)
 
       - name: 编译固件
@@ -183,12 +177,9 @@ jobs:
       - name: 打包固件
         run: |
           cd ./wrt/ && mkdir ./upload/
-
           cp -rf ./.config ./upload/Config_"${{matrix.target}}"_"$WRT_DATE".txt
-
           if [[ $WRT_CFG == 'false' ]]; then
             rm -rf $(find ./bin/targets/ -iregex ".*\(buildinfo\|json\|manifest\|sha256sums\|packages\)$")
-
             for TYPE in $WRT_TYPE ; do
               for FILE in $(find ./bin/targets/ -type f -iname "*$TYPE*.*") ; do
                 EXT=$(basename $FILE | cut -d '.' -f 2-)
