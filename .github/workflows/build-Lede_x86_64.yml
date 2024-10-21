@@ -211,7 +211,8 @@ jobs:
           files: ./wrt/upload/*.*
           body: |
 
-            源码：${{env.WRT_SOURCE}}
-            设备：${{env.WRT_TYPE}}
+            源码：${{env.WRT_URL}}
+            平台：${{env.WRT_TARGET}}
+            设备：${{env.WRT_SOURCE}}
             密码：${{env.WRT_PW}}
             地址：${{env.WRT_IP}}
