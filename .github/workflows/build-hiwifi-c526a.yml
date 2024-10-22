@@ -54,13 +54,13 @@ jobs:
         run: |
           export WRT_REPO=$(basename $GITHUB_WORKSPACE)
           export WRT_SOURCE=${{matrix.target}}
-          export WRT_DIY=$GITHUB_WORKSPACE/${{matrix.target}}/diy/*
+          export WRT_DIY=$GITHUB_WORKSPACE/${{matrix.target}}/diy
           
           echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
           echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
           echo "WRT_DIY=$WRT_DIY" >> $GITHUB_ENV
           
-          sudo -E chmod -R 755 $WRT_DIY
+          sudo -E chmod -R 755 $($GITHUB_WORKSPACE/${{matrix.target}}/diy)
           sudo cp -arf $WRT_DIY ./wrt/
 
       - name: 部署编译环境
