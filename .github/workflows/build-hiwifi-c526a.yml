@@ -115,7 +115,7 @@ jobs:
             echo "no patchs installed!"
           fi
 
-          if [ -f "$GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Diy.sh" ]; then
+          if [ -f "$GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Diy1.sh" ]; then
             $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Diy.sh
             echo "Diy installation done!"
           else
