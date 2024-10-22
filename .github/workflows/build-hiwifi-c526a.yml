@@ -1,5 +1,5 @@
 #云编译
-name: 编译Hiwifi-c526a
+name: 编译Hiwifi_c526a
 
 on:
   workflow_dispatch:
@@ -59,6 +59,8 @@ jobs:
           echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
           echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
           echo "WRT_DIY=$WRT_DIY" >> $GITHUB_ENV
+          
+          sudo -E chmod -R 755 $WRT_DIY
           
 
       - name: 部署编译环境
