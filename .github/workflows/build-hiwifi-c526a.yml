@@ -29,7 +29,7 @@ env:
   #默认源码分支
   WRT_BRANCH: master
   #是否清理磁盘空间
-  FREE_DISK_SPACE: false
+  FREE_DISK_SPACE: true
   #是否上传固件
   UPLOAD_FIRMWARE: true
   #是否发布固件
