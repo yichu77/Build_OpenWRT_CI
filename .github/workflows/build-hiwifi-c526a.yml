@@ -57,6 +57,9 @@ jobs:
 
           echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
           echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
+          
+          sudo chmod -R 755 ./${{matrix.target}}/diy
+          sudo cp -arf ./${{matrix.target}}/diy/* ./wrt/
 
       - name: 部署编译环境
         env:
@@ -93,8 +96,8 @@ jobs:
       - name: 克隆源代码
         run: |
           git clone --depth=1 --single-branch --branch $WRT_BRANCH $WRT_URL ./wrt/
-          chmod -R 755 ./${{matrix.target}}/diy
-          cp -arf ./${{matrix.target}}/diy/* ./wrt/
+          sudo chmod -R 755 ./${{matrix.target}}/diy
+          sudo cp -arf ./${{matrix.target}}/diy/* ./wrt/
           cd ./wrt/ && echo "WRT_HASH=$(git log -1 --pretty=format:'%h')" >> $GITHUB_ENV
           
 
