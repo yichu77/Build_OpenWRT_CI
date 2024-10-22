@@ -57,7 +57,6 @@ jobs:
 
           echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
           echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
-          chmod -R 755 "$GITHUB_WORKSPACE/${{matrix.target}}/diy
 
       - name: 部署编译环境
         env:
