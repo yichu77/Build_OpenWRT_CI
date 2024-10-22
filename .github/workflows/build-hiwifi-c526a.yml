@@ -59,10 +59,7 @@ jobs:
           echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
           echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
           echo "WRT_DIY=$WRT_DIY" >> $GITHUB_ENV
-
-      - name: 检查脚本赋权限
-        run: |
-          find ./${{matrix.target}} -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;          
+          
 
       - name: 部署编译环境
         env:
@@ -102,6 +99,9 @@ jobs:
           cd ./wrt/ && echo "WRT_HASH=$(git log -1 --pretty=format:'%h')" >> $GITHUB_ENV
           
 
+      - name: 检查脚本赋权限
+        run: |
+          find ./${{matrix.target}} -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
 
       - name: 检查修补程序
         run: |
