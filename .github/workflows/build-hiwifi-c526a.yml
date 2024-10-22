@@ -93,8 +93,8 @@ jobs:
       - name: 克隆源代码
         run: |
           git clone --depth=1 --single-branch --branch $WRT_BRANCH $WRT_URL ./wrt/
-          chmod -R 755 ${{matrix.target}}/Diy
-          cp -arf ${{matrix.target}}/Diy/* ./wrt/
+          chmod -R 755 ./${{matrix.target}}/diy
+          cp -arf ./${{matrix.target}}/diy/* ./wrt/
           cd ./wrt/ && echo "WRT_HASH=$(git log -1 --pretty=format:'%h')" >> $GITHUB_ENV
           
 
