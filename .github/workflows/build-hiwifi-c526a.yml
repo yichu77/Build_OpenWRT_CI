@@ -60,8 +60,8 @@ jobs:
           echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
           echo "WRT_DIY=$WRT_DIY" >> $GITHUB_ENV
           
-          sudo -E chmod -R 755 $WRT_DIY
-          sudo -E cp -arf $($WRT_DIY/*) ./wrt
+          #sudo -E chmod -R 755 $WRT_DIY
+          #sudo -E cp -arf $($WRT_DIY/*) ./wrt
           
 
       - name: 部署编译环境
@@ -115,7 +115,7 @@ jobs:
             echo "no patchs installed!"
           fi
 
-          if [ -f "$GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Diy1.sh" ]; then
+          if [ -f "$GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Diy.sh" ]; then
             $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Diy.sh
             echo "Diy installation done!"
           else
