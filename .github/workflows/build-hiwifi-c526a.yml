@@ -61,7 +61,7 @@ jobs:
           echo "WRT_DIY=$WRT_DIY" >> $GITHUB_ENV
           
           sudo -E chmod -R 755 $WRT_DIY
-          sudo -E cp -arf $($WRT_DIY/*) ./wrt/
+          sudo -E cp -arf $($WRT_DIY/*) ./wrt
           
 
       - name: 部署编译环境
