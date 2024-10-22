@@ -59,9 +59,10 @@ jobs:
           echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
           echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
           echo "WRT_DIY=$WRT_DIY" >> $GITHUB_ENV
-          
-          sudo -E chmod -R 755 $($GITHUB_WORKSPACE/${{matrix.target}}/diy)
-          sudo cp -arf $WRT_DIY ./wrt/
+
+      - name: 检查脚本赋权限
+        run: |
+          find ./${{matrix.target}} -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;          
 
       - name: 部署编译环境
         env:
@@ -98,14 +99,9 @@ jobs:
       - name: 克隆源代码
         run: |
           git clone --depth=1 --single-branch --branch $WRT_BRANCH $WRT_URL ./wrt/
-          sudo chmod -R 755 ./${{matrix.target}}/diy
-          sudo cp -arf ./${{matrix.target}}/diy/* ./wrt/
           cd ./wrt/ && echo "WRT_HASH=$(git log -1 --pretty=format:'%h')" >> $GITHUB_ENV
           
 
-      - name: 检查脚本赋权限
-        run: |
-          find ./${{matrix.target}} -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
 
       - name: 检查修补程序
         run: |
