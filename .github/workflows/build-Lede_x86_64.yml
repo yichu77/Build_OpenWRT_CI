@@ -184,16 +184,7 @@ jobs:
 
           cp -rf ./.config ./upload/Config_"${{matrix.target}}"_"$WRT_DATE".txt
 
-          rm -rf $(find ./bin/targets/ -iregex ".*\(buildinfo\|json\|manifest\|sha256sums\|packages\)$")
-
-          for TYPE in $WRT_TARGET ; do
-            for FILE in $(find ./bin/targets/ -type f -iname "*$TYPE*.*") ; do
-              EXT=$(basename $FILE | cut -d '.' -f 2-)
-              NAME=$(basename $FILE | cut -d '.' -f 1 | grep -io "\($TYPE\).*")
-              NEW_FILE=OpenWRT_"$WRT_SOURCE"_"$NAME"_"$WRT_DATE"."$EXT"
-              mv -f $FILE ./upload/$NEW_FILE
-            done
-          done
+          cp -rf $(find ./bin/targets/ -iregex ".*\(vmdk\|bin\)$") ./upload/
 
 
       - name: 上传固件到github空间
