@@ -23,7 +23,7 @@ env:
   #默认IP地址
   WRT_IP: 192.168.168.1
   #默认登录密码
-  WRT_PW: password
+  WRT_PW: 空密码
   #默认源码地址
   WRT_URL: https://github.com/coolsnowwolf/lede
   #默认源码分支
