@@ -4,8 +4,8 @@
 sed -i '$a src-git helloworld https://github.com/fw876/helloworld' feeds.conf.default
 
 #修改默认主题
-git clone https://github.com/sirpdboy/luci-theme-opentopd.git package/lean/luci-theme-opentopd #主题
-sed -i "s/luci-theme-bootstrap/luci-theme-$WRT_THEME/g" $(find ./feeds/luci/collections/ -type f -name "Makefile")
+#git clone https://github.com/sirpdboy/luci-theme-opentopd.git package/lean/luci-theme-opentopd #主题
+#sed -i "s/luci-theme-bootstrap/luci-theme-$WRT_THEME/g" $(find ./feeds/luci/collections/ -type f -name "Makefile")
 
 CFG_FILE="./package/base-files/files/bin/config_generate"
 #修改默认IP地址
