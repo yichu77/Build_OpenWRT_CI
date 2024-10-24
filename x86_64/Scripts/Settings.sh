@@ -3,6 +3,10 @@
 # 使用源码自带ShadowSocksR Plus+出国软件
 sed -i '$a src-git helloworld https://github.com/fw876/helloworld' feeds.conf.default
 
+# feeds获取theme-opentopd源码：
+ sed -i '$a src-git opentopd https://github.com/sirpdboy/luci-theme-opentopd' feeds.conf.default
+#echo "CONFIG_PACKAGE_luci-theme-$WRT_THEME=y" >> ./.config
+
 #修改默认主题
 #git clone https://github.com/sirpdboy/luci-theme-opentopd.git package/lean/luci-theme-opentopd #主题
 #sed -i "s/luci-theme-bootstrap/luci-theme-$WRT_THEME/g" $(find ./feeds/luci/collections/ -type f -name "Makefile")
@@ -35,9 +39,6 @@ elif [[ $WRT_URL == *"immortalwrt"* ]]; then
 	sed -i "s/ssid=.*/ssid=$WRT_WIFI/g" ./package/network/config/wifi-scripts/files/lib/wifi/mac80211.sh
 fi
 
-#配置文件修改
-#echo "CONFIG_PACKAGE_luci-theme-$WRT_THEME=y" >> ./.config
-#echo "CONFIG_PACKAGE_luci-app-$WRT_THEME-config=y" >> ./.config
 
 if [[ $WRT_URL == *"lede"* ]]; then
 	echo "CONFIG_PACKAGE_luci-app-ssr-plus=y" >> ./.config
