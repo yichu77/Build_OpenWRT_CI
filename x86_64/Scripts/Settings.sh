@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 使用源码自带ShadowSocksR Plus+出国软件
-sed -i '$a src-git helloworld https://github.com/fw876/helloworld' feeds.conf.default
+#sed -i '$a src-git helloworld https://github.com/fw876/helloworld' feeds.conf.default
 
 # feeds获取theme-opentopd源码：
 sed -i '$a src-git opentopd https://github.com/sirpdboy/luci-theme-opentopd' feeds.conf.default
