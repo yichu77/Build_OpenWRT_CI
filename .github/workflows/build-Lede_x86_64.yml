@@ -159,11 +159,11 @@ jobs:
 
           rm -rf ./tmp* ./.config*
 
-          cat $GITHUB_WORKSPACE/${{matrix.target}}/.config >> .config
+          mv $GITHUB_WORKSPACE/${{matrix.target}}/.config >> .config
 
           $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Settings.sh
 
-          #make defconfig
+          make defconfig
 
 
       - name: 下载软件包
