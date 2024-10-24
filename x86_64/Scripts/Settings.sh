@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#注释第2行
+sed -i '2 i \#' feeds.conf.default
+sed -i 's/.git;openwrt-23.05//g' feeds.conf.default
+
 # 使用源码自带ShadowSocksR Plus+出国软件
 #sed -i '$a src-git helloworld https://github.com/fw876/helloworld' feeds.conf.default
 
