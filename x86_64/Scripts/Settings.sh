@@ -39,12 +39,3 @@ elif [[ $WRT_URL == *"immortalwrt"* ]]; then
 	sed -i "s/ssid=.*/ssid=$WRT_WIFI/g" ./package/network/config/wifi-scripts/files/lib/wifi/mac80211.sh
 fi
 
-
-if [[ $WRT_URL == *"lede"* ]]; then
-	#echo "CONFIG_PACKAGE_luci-app-ssr-plus=y" >> ./.config
-	#echo "CONFIG_PACKAGE_luci-app-openclash=y" >> ./.config
-elif [[ $WRT_URL == *"immortalwrt"* ]]; then
-	echo "CONFIG_PACKAGE_luci=y" >> ./.config
-	echo "CONFIG_LUCI_LANG_zh_Hans=y" >> ./.config
-	echo "CONFIG_PACKAGE_luci-app-homeproxy=y" >> ./.config
-fi
