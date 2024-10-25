@@ -156,17 +156,10 @@ jobs:
       - name: 自定义设置
         run: |
           cd ./wrt/
-
           rm -rf ./tmp* ./.config*
-
-          make defconfig
-
           cat $GITHUB_WORKSPACE/${{matrix.target}}/.config >> .config
-
           $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Settings.sh
-
-
-
+          make defconfig
 
       - name: 下载软件包
         run: |
