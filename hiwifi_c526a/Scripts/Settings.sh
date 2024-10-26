@@ -3,12 +3,12 @@
 sed -i 's/.git;openwrt-23.05//g' feeds.conf.default
 
 # 使用源码自带ShadowSocksR Plus+出国软件
-sed -i '$a src-git helloworld https://github.com/fw876/helloworld' feeds.conf.default
+#sed -i '$a src-git helloworld https://github.com/fw876/helloworld' feeds.conf.default
 
 # feeds获取theme-opentopd源码：
 #sed -i '$a src-git opentopd https://github.com/sirpdboy/luci-theme-opentopd' feeds.conf.default
-git clone https://github.com/sirpdboy/luci-theme-opentopd.git package/lean/luci-theme-opentopd #主题
-echo "CONFIG_PACKAGE_luci-theme-$WRT_THEME=y" >> ./.config
+#git clone https://github.com/sirpdboy/luci-theme-opentopd.git package/lean/luci-theme-opentopd #主题
+#echo "CONFIG_PACKAGE_luci-theme-$WRT_THEME=y" >> ./.config
 
 #修改默认主题
 #sed -i "s/luci-theme-bootstrap/luci-theme-$WRT_THEME/g" $(find ./feeds/luci/collections/ -type f -name "Makefile")
@@ -16,7 +16,7 @@ echo "CONFIG_PACKAGE_luci-theme-$WRT_THEME=y" >> ./.config
 CFG_FILE="./package/base-files/files/bin/config_generate"
 #修改默认IP地址
 #sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" package/base-files/files/bin/config_generate
-sed -i 's/192.168.1.1/$WRT_IP/g' package/base-files/files/bin/config_generate
+sed -i 's/192.168.1.1/$WRT_IP/g' ./package/base-files/files/bin/config_generate
 #修改默认主机名
 sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" $CFG_FILE
 #修改默认时区
