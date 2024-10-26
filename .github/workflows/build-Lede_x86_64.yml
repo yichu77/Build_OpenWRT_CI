@@ -25,7 +25,7 @@ env:
   #默认登录密码
   WRT_PW: 空密码
   #默认源码地址
-  WRT_URL: https://github.com/coolsnowwolf/lede    #https://github.com/coolsnowwolf/lede
+  WRT_URL: https://github.com/yichu77/lede    #https://github.com/coolsnowwolf/lede
   #默认源码分支
   WRT_BRANCH: master
   #是否清理磁盘空间
