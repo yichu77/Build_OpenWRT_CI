@@ -157,12 +157,6 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      - name: 自定义程序包
-        run: |
-          cd ./wrt/package/
-          $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Packages.sh
-          $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Handles.sh
-
       - name: 自定义设置
         run: |
           cd ./wrt/
