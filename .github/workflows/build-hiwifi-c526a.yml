@@ -15,7 +15,7 @@ env:
   #编译平台
   WRT_TARGET: ipq40xx
   #默认主题
-  WRT_THEME: opentopd
+  WRT_THEME: openwrt
   #默认主机名
   WRT_NAME: OpenWRT
   #默认WIFI名
@@ -37,7 +37,7 @@ env:
 
 jobs:
   wrt_core:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     if: github.event.repository.owner.id == github.event.sender.id
 
     name: 编译 ${{matrix.target}}
