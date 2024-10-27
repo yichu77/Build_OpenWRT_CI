@@ -5,7 +5,7 @@ if [[ $WRT_URL == *"coolsnowwolf"* ]]; then
 	#sed -i '2 i \#' feeds.conf.default
 	sed -i 's/.git;openwrt-23.05//g' feeds.conf.default
 	# 使用源码自带ShadowSocksR Plus+出国软件
-	sed -i '$a src-git helloworld https://github.com/fw876/helloworld' feeds.conf.default
+	#sed -i '$a src-git helloworld https://github.com/fw876/helloworld' feeds.conf.default
 	#修改默认IP地址
 	#sed -i "s/192\.168\.[0-9]*\.[0-9]*/$WRT_IP/g" package/base-files/files/bin/config_generate
 	sed -i 's/192.168.1.1/192.168.68.1/g' ./package/base-files/files/bin/config_generate
