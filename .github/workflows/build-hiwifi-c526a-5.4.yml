@@ -1,0 +1,208 @@
+#云编译
+name: 编译Hiwifi_c526a_5.4
+
+on:
+  workflow_dispatch:
+
+
+
+#CI权限
+permissions: write-all
+
+
+env:
+  GH_TOKEN: ${{ github.token }}
+  #编译平台
+  WRT_TARGET: ipq40xx
+  #默认主题
+  WRT_THEME: openwrt
+  #默认主机名
+  WRT_NAME: OpenWRT
+  #默认WIFI名
+  WRT_WIFI: OpenWRT
+  #默认IP地址
+  WRT_IP: 192.168.168.1
+  #默认登录密码
+  WRT_PW: password
+  #默认源码地址
+  WRT_URL: https://github.com/yichu77/openwrt        #https://github.com/coolsnowwolf/lede
+  #默认源码分支
+  WRT_BRANCH: master
+  #是否清理磁盘空间
+  FREE_DISK_SPACE: true
+  #是否上传固件
+  UPLOAD_FIRMWARE: true
+  #是否发布固件
+  UPLOAD_RELEASE: true
+
+jobs:
+  wrt_core:
+    runs-on: ubuntu-20.04
+    if: github.event.repository.owner.id == github.event.sender.id
+
+    name: 编译 ${{matrix.target}}
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [hiwifi_c526a]  #[x86_64，hiwifi_c526a]
+        
+    steps:
+      - name: 签入项目
+        uses: actions/checkout@main
+
+      - name: 初始化值
+        run: |
+          export WRT_REPO=$(basename $GITHUB_WORKSPACE)
+          export WRT_SOURCE=${{matrix.target}}
+          export WRT_DIY=$GITHUB_WORKSPACE/${{matrix.target}}/diy
+          
+          echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
+          echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
+          echo "WRT_DIY=$WRT_DIY" >> $GITHUB_ENV
+          
+          #sudo -E chmod -R 755 $WRT_DIY
+          #sudo -E cp -arf $($WRT_DIY/*) ./wrt
+          
+
+      - name: 部署编译环境
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo -E apt -yqq update
+          sudo -E apt -yqq full-upgrade
+          sudo -E apt -yqq install $(sed -n "1{s/\r$//g;p;q}" $GITHUB_WORKSPACE/Depends.txt)
+          sudo -E apt -yqq autoremove --purge
+          sudo -E apt -yqq autoclean
+          sudo -E apt -yqq clean
+          sudo -E systemctl daemon-reload
+          sudo -E timedatectl set-timezone "Asia/Shanghai"
+
+      - name: 清理磁盘空间
+        uses: endersonmenezes/free-disk-space@main
+        if: env.FREE_DISK_SPACE == 'true' && !cancelled()
+        with:
+          remove_android: true
+          remove_dotnet: true
+          remove_haskell: true
+          remove_tool_cache: true
+          remove_swap: true
+          remove_packages: "android* azure* clang* dotnet* firefox* ghc* golang* google* libclang* libgl1* \
+            lld* llvm* microsoft* mongodb* mono* mysql* nodejs* openjdk* php* postgresql* powershell* snap* temurin* yarn* zulu*"
+          remove_packages_one_command: true
+          remove_folders: "/etc/apt/sources.list.d* /etc/mono* /etc/mysql* /usr/include/linux/android* /usr/lib/llvm* /usr/lib/mono* \
+            /usr/local/lib/android* /usr/local/lib/node_modules* /usr/local/share/chromium* /usr/local/share/powershell* /usr/local/share/vcpkg/ports/azure* \
+            /usr/local/share/vcpkg/ports/google* /usr/local/share/vcpkg/ports/libpq/android* /usr/local/share/vcpkg/ports/llvm* /usr/local/share/vcpkg/ports/mysql* \
+            /usr/local/share/vcpkg/ports/snap* /usr/share/azure* /usr/share/dotnet* /usr/share/glade* /usr/share/miniconda* /usr/share/php* /usr/share/swift \
+            /var/lib/mysql* /var/log/azure*"
+          testing: false
+
+      - name: 克隆源代码
+        run: |
+          git clone --depth=1 --single-branch --branch $WRT_BRANCH $WRT_URL ./wrt/
+          cd ./wrt/ && echo "WRT_HASH=$(git log -1 --pretty=format:'%h')" >> $GITHUB_ENV
+          
+
+      - name: 检查脚本赋权限
+        run: |
+          find ./${{matrix.target}} -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
+          chmod -R 755 ./wrt
+
+      - name: 检查修补程序
+        run: |
+          if [ -f "$GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Patches.sh" ]; then
+            $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Patches.sh
+            echo "patchs installation done!"
+          else
+            echo "no patchs installed!"
+          fi
+
+          if [ -f "$GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Diy.sh" ]; then
+            $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Diy.sh
+            echo "Diy installation done!"
+          else
+            echo "no Diy installed!"
+          fi
+
+      - name: 检查缓存
+        id: check-cache
+        uses: actions/cache@main
+        with:
+          key: ${{env.WRT_TARGET}}-${{env.WRT_SOURCE}}-${{env.WRT_HASH}}
+          path: |
+            ./wrt/.ccache
+            ./wrt/staging_dir/host*
+            ./wrt/staging_dir/tool*
+
+      - name: 更新缓存
+        run: |
+          if ${{steps.check-cache.outputs.cache-hit == 'true'}}; then
+            sed -i 's/ $(tool.*\/stamp-compile)//g' ./wrt/Makefile
+            sed -i 's/ $(tool.*\/stamp-install)//g' ./wrt/Makefile
+
+            echo "toolchain skiped done!"
+          else
+            gh extension install actions/gh-actions-cache
+
+            CACHE_LIST=$(gh actions-cache list --key "$WRT_TARGET-$WRT_SOURCE" | cut -f 1)
+            for CACHE_KEY in $CACHE_LIST; do
+               gh actions-cache delete $CACHE_KEY --confirm
+            done
+
+            echo "caches cleanup done!"
+          fi
+
+      - name: 更新源
+        run: |
+          cd ./wrt/
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: 自定义设置
+        run: |
+          cd ./wrt/
+          rm -rf ./tmp* ./.config*
+          cat $GITHUB_WORKSPACE/${{matrix.target}}/.config >> .config
+          $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Settings.sh
+          make defconfig
+
+      - name: 下载软件包
+        run: |
+          cd ./wrt/
+          make download -j$(nproc)
+          
+
+      - name: 编译固件
+        run: |
+          chmod -R 755 ./wrt
+          cd ./wrt/
+          make -j$(nproc) || make -j1 V=s      
+          export WRT_DATE=$(date +"%Y-%m-%d_%H.%M")
+          echo "WRT_DATE=$WRT_DATE" >> $GITHUB_ENV
+
+
+      - name: 打包固件
+        run: |
+          cd ./wrt/ && mkdir ./upload/
+          cp -rf ./.config ./upload/Config_"${{matrix.target}}"_"$WRT_DATE".txt
+          cp -rf $(find ./bin/targets/ -iregex ".*\(ubi\|bin\)$") ./upload/
+
+      - name: 上传固件到github空间
+        uses: actions/upload-artifact@main
+        if: env.UPLOAD_FIRMWARE == 'true'  
+        with:
+          name: OpenWrt_firmware_${{matrix.target}}_${{ env.WRT_DATE}}
+          path: ./wrt/upload/
+
+      - name: 发布固件到release
+        uses: softprops/action-gh-release@master
+        if: env.UPLOAD_RELEASE == 'true'
+        with:
+          tag_name: OpenWrt_${{env.WRT_SOURCE}}_${{env.WRT_DATE}}
+          files: ./wrt/upload/*.*
+          body: |
+
+            源码：${{env.WRT_URL}}
+            平台：${{env.WRT_TARGET}}
+            设备：${{env.WRT_SOURCE}}
+            密码：${{env.WRT_PW}}
+            地址：${{env.WRT_IP}}
