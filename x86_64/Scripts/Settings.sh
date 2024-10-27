@@ -17,6 +17,8 @@ fi
 
 CFG_FILE="./package/base-files/files/bin/config_generate"
 
+# 设置密码为空（安装固件时无需密码登陆，然后自己修改想要的密码）
+sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' package/lean/default-settings/files/zzz-default-settings
 
 #修改默认主机名
 sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" $CFG_FILE
@@ -32,8 +34,7 @@ if [[ $WRT_URL == *"lede"* ]]; then
 	sed -i "s/(\(<%=pcdata(ver.luciversion)%>\))/\1 \/ $WRT_REPO-$WRT_DATE/" $LEDE_FILE
 	#修改默认WIFI名
 	sed -i "s/ssid=.*/ssid=$WRT_WIFI/g" ./package/kernel/mac80211/files/lib/wifi/mac80211.sh
-        # 设置密码为空（安装固件时无需密码登陆，然后自己修改想要的密码）
-        sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' package/lean/default-settings/files/zzz-default-settings
+
 elif [[ $WRT_URL == *"immortalwrt"* ]]; then
 	#添加编译日期标识
 	VER_FILE=$(find ./feeds/luci/modules/ -type f -name "10_system.js")
