@@ -105,7 +105,7 @@ jobs:
       - name: 检查脚本赋权限
         run: |
           find ./${{matrix.target}} -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
-
+          chmod -R 755 ./wrt
 
       - name: 检查修补程序
         run: |
