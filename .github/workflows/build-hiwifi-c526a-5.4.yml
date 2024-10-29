@@ -32,7 +32,7 @@ jobs:
       - name: 初始化值
         run: |
         
-          source "${GITHUB_WORKSPACE}/build/${{matrix.target}}/settings5.4.ini"
+          source "${GITHUB_WORKSPACE}/Target/${{matrix.target}}/settings5.4.ini"
           export WRT_REPO=$(basename $GITHUB_WORKSPACE)
           export WRT_SOURCE=${{matrix.target}}
           export WRT_DIY=$GITHUB_WORKSPACE/Target/${{matrix.target}}/diy
