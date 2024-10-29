@@ -66,7 +66,7 @@ jobs:
         run: |
           sudo -E apt -yqq update
           sudo -E apt -yqq full-upgrade
-          sudo -E apt -yqq install $(sed -n "1{s/\r$//g;p;q}" $GITHUB_WORKSPACE/Depends.txt)
+          sudo -E apt -yqq install $(sed -n "1{s/\r$//g;p;q}" $GITHUB_WORKSPACE/Target/Depends.txt)
           sudo -E apt -yqq autoremove --purge
           sudo -E apt -yqq autoclean
           sudo -E apt -yqq clean
@@ -99,13 +99,13 @@ jobs:
 
       - name: 检查脚本
         run: |
-          find ./${{matrix.target}} -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
+          find ./Target/${{matrix.target}} -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
           chmod -R 755 ./wrt
 
       - name: 检查修补程序
         run: |
-          if [ -f "$GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Patches.sh" ]; then
-            $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Patches.sh
+          if [ -f "$GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Patches.sh" ]; then
+            $GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Patches.sh
             echo "patchs installation done!"
           else
             echo "no patchs installed!"
@@ -151,15 +151,15 @@ jobs:
         
           cd ./wrt/package/
 
-          $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Packages.sh
-          $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Handles.sh
+          $GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Packages.sh
+          $GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Handles.sh
 
       - name: 自定义设置
         run: |
           cd ./wrt/
           rm -rf ./tmp* ./.config*
-          cat $GITHUB_WORKSPACE/${{matrix.target}}/.config >> .config
-          $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Settings.sh
+          cat $GITHUB_WORKSPACE/Target/${{matrix.target}}/.config >> .config
+          $GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Settings.sh
           make defconfig
 
       - name: 下载软件包

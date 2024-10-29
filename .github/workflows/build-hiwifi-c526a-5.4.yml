@@ -12,28 +12,7 @@ permissions: write-all
 
 env:
   GH_TOKEN: ${{ github.token }}
-  #编译平台
-  WRT_TARGET: ipq40xx
-  #默认主题
-  WRT_THEME: openwrt
-  #默认主机名
-  WRT_NAME: OpenWRT
-  #默认WIFI名
-  WRT_WIFI: OpenWRT
-  #默认IP地址
-  WRT_IP: 192.168.168.1
-  #默认登录密码
-  WRT_PW: password
-  #默认源码地址
-  WRT_URL: https://github.com/yichu77/openwrt        #https://github.com/coolsnowwolf/lede
-  #默认源码分支
-  WRT_BRANCH: master
-  #是否清理磁盘空间
-  FREE_DISK_SPACE: true
-  #是否上传固件
-  UPLOAD_FIRMWARE: true
-  #是否发布固件
-  UPLOAD_RELEASE: true
+
 
 jobs:
   wrt_core:
@@ -52,25 +31,41 @@ jobs:
 
       - name: 初始化值
         run: |
+        
+          source "${GITHUB_WORKSPACE}/build/${{matrix.target}}/settings5.4.ini"
           export WRT_REPO=$(basename $GITHUB_WORKSPACE)
           export WRT_SOURCE=${{matrix.target}}
-          export WRT_DIY=$GITHUB_WORKSPACE/${{matrix.target}}/diy
-          
+          export WRT_DIY=$GITHUB_WORKSPACE/Target/${{matrix.target}}/diy
+
           echo "WRT_REPO=$WRT_REPO" >> $GITHUB_ENV
           echo "WRT_SOURCE=$WRT_SOURCE" >> $GITHUB_ENV
           echo "WRT_DIY=$WRT_DIY" >> $GITHUB_ENV
           
-          #sudo -E chmod -R 755 $WRT_DIY
-          #sudo -E cp -arf $($WRT_DIY/*) ./wrt
-          
+          echo "WRT_URL=${WRT_URL}" >> $GITHUB_ENV
+          echo "WRT_BRANCH=${WRT_BRANCH}" >> $GITHUB_ENV
+          echo "WRT_TARGET=${WRT_TARGET}" >> $GITHUB_ENV          
+          echo "WRT_THEME=${WRT_THEME}" >> $GITHUB_ENV          
+          echo "WRT_NAME=${WRT_NAME}" >> $GITHUB_ENV          
+          echo "WRT_WIFI=${WRT_WIFI}" >> $GITHUB_ENV
+          echo "WRT_IP=${WRT_IP}" >> $GITHUB_ENV
+          echo "WRT_PW=${WRT_PW}" >> $GITHUB_ENV
 
+          echo "CONFIG_FILE=${CONFIG_FILE}" >> $GITHUB_ENV
+          echo "DIY_P1_SH=${DIY_P1_SH}" >> $GITHUB_ENV
+          echo "DIY_P2_SH=${DIY_P2_SH}" >> $GITHUB_ENV
+          
+          echo "FREE_DISK_SPACE=${FREE_DISK_SPACE}" >> $GITHUB_ENV
+          echo "UPLOAD_FIRMWARE=${UPLOAD_FIRMWARE}" >> $GITHUB_ENV
+          echo "UPLOAD_RELEASE=${UPLOAD_RELEASE}" >> $GITHUB_ENV  
+          echo "FIRMWARE=$PWD" >> $GITHUB_ENV
+          
       - name: 部署编译环境
         env:
           DEBIAN_FRONTEND: noninteractive
         run: |
           sudo -E apt -yqq update
           sudo -E apt -yqq full-upgrade
-          sudo -E apt -yqq install $(sed -n "1{s/\r$//g;p;q}" $GITHUB_WORKSPACE/Depends.txt)
+          sudo -E apt -yqq install $(sed -n "1{s/\r$//g;p;q}" $GITHUB_WORKSPACE/Target/Depends.txt)
           sudo -E apt -yqq autoremove --purge
           sudo -E apt -yqq autoclean
           sudo -E apt -yqq clean
@@ -104,20 +99,20 @@ jobs:
 
       - name: 检查脚本赋权限
         run: |
-          find ./${{matrix.target}} -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
+          find ./Target/${{matrix.target}} -maxdepth 2 -type f -iregex ".*\(txt\|sh\)$" -exec dos2unix {} \; -exec chmod +x {} \;
           chmod -R 755 ./wrt
 
       - name: 检查修补程序
         run: |
-          if [ -f "$GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Patches.sh" ]; then
-            $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Patches.sh
+          if [ -f "$GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Patches.sh" ]; then
+            $GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Patches.sh
             echo "patchs installation done!"
           else
             echo "no patchs installed!"
           fi
 
-          if [ -f "$GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Diy.sh" ]; then
-            $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Diy.sh
+          if [ -f "$GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Diy.sh" ]; then
+            $GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Diy.sh
             echo "Diy installation done!"
           else
             echo "no Diy installed!"
@@ -161,8 +156,8 @@ jobs:
         run: |
           cd ./wrt/
           rm -rf ./tmp* ./.config*
-          cat $GITHUB_WORKSPACE/${{matrix.target}}/.config >> .config
-          $GITHUB_WORKSPACE/${{matrix.target}}/Scripts/Settings.sh
+          cat $GITHUB_WORKSPACE/Target/${{matrix.target}}/.config >> .config
+          $GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Settings.sh
           make defconfig
 
       - name: 下载软件包
