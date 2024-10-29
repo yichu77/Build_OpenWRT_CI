@@ -152,7 +152,7 @@ jobs:
         run: |
           cd ./wrt/
           rm -rf ./tmp* ./.config*
-          cat $GITHUB_WORKSPACE/Target/${{matrix.target}}/.config >> .config
+          cat $GITHUB_WORKSPACE/Target/${{matrix.target}}/$CONFIG_FILE >> .config
           $GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Settings.sh
           make defconfig
 
