@@ -1,5 +1,5 @@
 #云编译
-name: 编译Hiwifi_c526a_5.4
+name: 编译Hiwifi_c526a_5.10
 
 on:
   workflow_dispatch:
