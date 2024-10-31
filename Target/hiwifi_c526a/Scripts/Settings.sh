@@ -16,7 +16,7 @@ fi
 
 
 	#修改默认主机名
-	#sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" package/lean/default-settings/files/zzz-default-settings
+	sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" package/lean/default-settings/files/zzz-default-settings
 
 	#修改默认IP地址
 	sed -i "s/192\.168\.[0-9]*/$WRT_IP/g" package/base-files/files/bin/config_generate
