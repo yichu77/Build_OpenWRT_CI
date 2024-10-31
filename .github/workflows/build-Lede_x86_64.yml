@@ -188,7 +188,7 @@ jobs:
         uses: actions/upload-artifact@main
         if: env.UPLOAD_FIRMWARE == 'true'  
         with:
-          name: OpenWrt_firmware_${{ env.WRT_TYPE}}_${{ env.WRT_DATE}}
+          name: OpenWrt_${{env.WRT_TARGET}}_${{ env.WRT_TYPE}}_${{ env.WRT_DATE}}
           path: ./wrt/upload/
 
       - name: 发布固件到release
