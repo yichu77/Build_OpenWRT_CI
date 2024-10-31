@@ -16,7 +16,6 @@ if [[ $WRT_URL == *"lede"* ]]; then
 	CFG_FILE="./package/base-files/files/bin/config_generate"
 	#sed -i 's/192.168.1.1/$WRT_IP/g' ./package/base-files/files/bin/config_generate
 
-E:\Github\lede\package\base-files\image-config.in
 	#修改默认主机名
 	#sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" $CFG_FILE
 	#修改默认时区
