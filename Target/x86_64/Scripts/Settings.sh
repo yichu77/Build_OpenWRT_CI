@@ -11,6 +11,8 @@ if [[ $WRT_URL == *"coolsnowwolf"* ]]; then
 	#sed -i '$a src-git opentopd https://github.com/sirpdboy/luci-theme-opentopd' feeds.conf.default
 	#git clone https://github.com/sirpdboy/luci-theme-opentopd.git package/lean/luci-theme-opentopd #主题
 	#echo "CONFIG_PACKAGE_luci-theme-$WRT_THEME=y" >> ./.config
+	#修改默认主机名
+	sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" package/lean/default-settings/files/zzz-default-settings
 fi
 
 #修改默认IP地址
@@ -23,9 +25,8 @@ sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' package/lean/default-settings/files/zzz
 
 #修改默认主机名
 sed -i "s/hostname='.*'/hostname='$WRT_NAME'/g" $CFG_FILE
-#修改默认时区
-sed -i "s/timezone='.*'/timezone='CST-8'/g" $CFG_FILE
-sed -i "/timezone='.*'/a\\\t\t\set system.@system[-1].zonename='Asia/Shanghai'" $CFG_FILE
+
+
 
 if [[ $WRT_URL == *"lede"* ]]; then
 	LEDE_FILE=$(find ./package/lean/autocore/ -type f -name "index.htm")
