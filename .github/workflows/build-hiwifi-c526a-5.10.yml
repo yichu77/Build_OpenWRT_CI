@@ -154,10 +154,14 @@ jobs:
 
       - name: 自定义设置
         run: |
+
           cd ./wrt/
           rm -rf ./tmp* ./.config*
           cat $GITHUB_WORKSPACE/Target/${{matrix.target}}/$CONFIG_FILE >> .config
           $GITHUB_WORKSPACE/Target/${{matrix.target}}/Scripts/Settings.sh
+          if [ -n "$(ls -A "$GITHUB_WORKSPACE/Target/${{matrix.target}}/files" 2>/dev/null)" ]; then
+            cp -rf $GITHUB_WORKSPACE/Target/${{matrix.target}}/files files
+          fi
           make defconfig
 
       - name: 下载软件包
