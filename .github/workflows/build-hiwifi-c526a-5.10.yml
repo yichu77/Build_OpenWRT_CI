@@ -183,22 +183,8 @@ jobs:
         run: |
           cd ./wrt/ && mkdir ./upload/
           cp -rf ./.config ./upload/Config_"${{matrix.target}}"_"$WRT_DATE".txt
+          cp -rf $(find ./bin/targets/ -iregex ".*\(ubi\|bin\|buildinfo\)$") ./upload/
 
-          #cp -rf $(find ./bin/targets/ -iregex ".*\(ubi\|bin\)$") ./upload/
-
-      - name: 上传.config配置文件到github空间
-        uses: actions/upload-artifact@main
-        if: env.UPLOAD_FIRMWARE == 'true'  
-        with:
-          name: .config_${{matrix.target}}_${{ env.FILE_DATE }}
-          path: /.config
-
-      - name: 上传固件到github空间
-        uses: actions/upload-artifact@main
-        if: env.UPLOAD_FIRMWARE == 'true'  
-        with:
-          name: OpenWrt_firmware_${{matrix.target}}_${{ env.FILE_DATE }}
-          path: ${{ env.FIRMWARE }}
 
       - name: 上传文件件到github空间
         uses: actions/upload-artifact@main
