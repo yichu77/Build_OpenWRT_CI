@@ -183,7 +183,7 @@ jobs:
         run: |
           cd ./wrt/ && mkdir ./upload/
           cp -rf ./.config ./upload/Config_"${{matrix.target}}"_"$WRT_DATE".txt
-          cp -rf $(find ./bin/targets/ -iregex ".*\(ubi\|bin\|buildinfo\)$") ./upload/
+          cp -rf $(find ./bin/targets/ -iregex ".*\(ubi\|bin\|buildinfo\|sha256sums\)$") ./upload/
 
 
       - name: 上传文件件到github空间
