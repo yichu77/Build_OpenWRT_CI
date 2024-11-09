@@ -179,7 +179,7 @@ jobs:
         run: |
           cd ./wrt/ && mkdir ./upload/
           cp -rf ./.config ./upload/Config_"${{matrix.target}}"_"$WRT_DATE".txt
-          cp -rf $(find ./bin/targets/ -iregex ".*\(ubi\|bin\)$") ./upload/
+          cp -rf $(find ./bin/targets/ -iregex ".*\(ubi\|bin\|buildinfo\|sha256sums\)$") ./upload/
 
       - name: 上传固件到github空间
         uses: actions/upload-artifact@main
