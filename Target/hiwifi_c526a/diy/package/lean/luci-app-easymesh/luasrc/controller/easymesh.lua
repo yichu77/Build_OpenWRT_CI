@@ -12,4 +12,3 @@ function index()
 	page.dependent = true
 	page.acl_depends = { "luci-app-easymesh" }
 end
-
