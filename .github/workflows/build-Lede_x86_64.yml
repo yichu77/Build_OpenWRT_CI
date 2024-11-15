@@ -187,7 +187,7 @@ jobs:
 
           cp -rf ./.config ./upload/Config_"$WRT_TYPE"_"$WRT_DATE".txt
 
-          cp -rf $(find ./bin/targets/ -iregex ".*\(vmdk\|bin\|buildinfo\|sha256sums\)$") ./upload/
+          cp -rf $(find ./bin/targets/ -iregex ".*\(vmdk\|bin\|gz\|buildinfo\|sha256sums\)$") ./upload/
 
 
       - name: 上传固件到github空间
