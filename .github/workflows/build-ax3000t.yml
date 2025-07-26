@@ -1,5 +1,5 @@
 #云编译
-name: 编译AX3000T
+name: 编译ax3000t
 
 on:
   workflow_dispatch:
