@@ -1,5 +1,5 @@
 #云编译
-name: 编译ax3000t
+name: 编译XiaoMi_ax3000t
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [ax3000t]  #[x86_64，hiwifi_c526a]
+        target: [xiaomi_ax3000t]  #[x86_64，hiwifi_c526a]
         
     steps:
       - name: 签入项目
