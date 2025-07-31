@@ -186,7 +186,7 @@ jobs:
           cp -rf $(find ./bin/targets/ -iregex ".*\(ubi\|bin\|buildinfo\|sha256sums\)$") ./upload/
 
 
-      - name: 上传文件件到github空间
+      - name: 上传文件到github空间
         uses: actions/upload-artifact@main
         if: env.UPLOAD_FIRMWARE == 'true'  
         with:
