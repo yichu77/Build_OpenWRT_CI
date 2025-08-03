@@ -9,6 +9,10 @@ if [[ $WRT_URL == *"coolsnowwolf"* ]]; then
 
 	# 设置密码为空（安装固件时无需密码登陆，然后自己修改想要的密码）
 	sed -i 's@.*CYXluq4wUazHjmCDBCqXF*@#&@g' package/lean/default-settings/files/zzz-default-settings
+	# 修改版本为编译日期
+	date_version=$(date +"%y.%m.%d")
+	orig_version=$(cat "package/lean/default-settings/files/zzz-default-settings" | grep DISTRIB_REVISION= | awk -F "'" '{print $2}')
+	sed -i "s/${orig_version}/R${date_version} by BBG/g" package/lean/default-settings/files/zzz-default-settings
 
 	CFG_FILE="package/base-files/luci2/bin/config_generate"
 	#修改默认IP地址
@@ -28,10 +32,6 @@ if [[ $WRT_URL == *"coolsnowwolf"* ]]; then
 	#修改默认WIFI名
 	sed -i "s/ssid=.*/ssid=$WRT_WIFI/g" package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
-	# 修改版本为编译日期
-	date_version=$(date +"%y.%m.%d")
-	orig_version=$(cat "package/lean/default-settings/files/zzz-default-settings" | grep DISTRIB_REVISION= | awk -F "'" '{print $2}')
-	sed -i "s/${orig_version}/R${date_version} by BBG/g" package/lean/default-settings/files/zzz-default-settings
 
 	# 移除默认安装的vsftpd、vlmcsd
 	sed -i "s/luci-app-vsftpd//g" include/target.mk
